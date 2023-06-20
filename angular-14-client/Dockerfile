@@ -1,19 +1,13 @@
-FROM node:18
+# Stage 1: Build frontend
+FROM node:18.16.0-alpine3.17 as build-stage
+WORKDIR ./app
+COPY ./package*.json /app/
+RUN npm ci
+COPY ./ /app/
 
-# Create app directory
-WORKDIR /usr/src/app
+RUN npm run build -- --output-path=./dist/out --output-hashing=all
 
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
-COPY . .
-
-RUN npm install
-# If you are building your code for production
-# RUN npm ci --omit=dev
-
-# Bundle app source
-COPY . .
-
-EXPOSE 8080
-CMD [ "node", "server.js" ]
+# Stage 2: Serve it using Ngnix
+FROM nginx:stable-alpine
+COPY --from=build-stage /app/dist/out/ /usr/share/nginx/html
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
