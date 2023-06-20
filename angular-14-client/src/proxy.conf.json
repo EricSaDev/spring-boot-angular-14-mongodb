@@ -1,0 +1,10 @@
+{
+    "/api": {
+      "target": "http://backend-demo-basa.apps.cluster-x9m7n.x9m7n.example.opentlc.com/api/tutorials",
+      "secure": true,
+      "changeOrigin": true,
+      "pathRewrite": {
+        "^/api": ""
+      }
+    }
+  }
