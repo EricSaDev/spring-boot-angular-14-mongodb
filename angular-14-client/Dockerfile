@@ -1,32 +1,15 @@
-### STAGE 1: Build ###
-FROM node:lts-alpine AS build
+# Stage 1: Build frontend
+FROM node:18.16.0-alpine3.17 as build-stage
+WORKDIR ./app
+COPY ./package*.json /app/
+RUN npm ci
+COPY ./ /app/
 
-#### make the 'app' folder the current working directory
-WORKDIR /usr/src/app
+RUN npm run build -- --output-path=./dist/out --output-hashing=all
 
-#### copy both 'package.json' and 'package-lock.json' (if available)
-COPY package*.json ./
+# Stage 2: Serve it using Ngnix
+FROM nginx:stable-alpine
+COPY --from=build-stage /app/dist/out/ /usr/share/nginx/html
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 
-#### install angular cli
-RUN npm install -g @angular/cli
-
-#### install project dependencies
-RUN npm install
-
-#### copy things
-COPY . .
-
-#### generate build --prod
-RUN npm run build:ssr
-
-### STAGE 2: Run ###
-FROM nginxinc/nginx-unprivileged
-
-#### copy nginx conf
-COPY ./config/nginx.conf /etc/nginx/conf.d/default.conf
-
-#### copy artifact build from the 'build environment'
-COPY --from=build /usr/src/app/dist/vitorspace/browser /usr/share/nginx/html
-
-#### don't know what this is, but seems cool and techy
-CMD ["nginx", "-g", "daemon off;"]
+EXPOSE 8080
