@@ -21,7 +21,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.bezkoder.spring.data.mongodb.model.Tutorial;
 import com.bezkoder.spring.data.mongodb.repository.TutorialRepository;
 
-@CrossOrigin(origins = "http://backend.demo-basa.svc:8080")
+@CrossOrigin(origins = 
+  {
+    "http://localhost:8080",
+    "http://backend.demo-basa.svc:8080",
+    "http://frontend.demo-basa.svc:8080",
+    "http://frontend-demo-basa.apps.cluster-x9m7n.x9m7n.example",
+    "https://frontend-demo-basa.apps.cluster-x9m7n.x9m7n.example"
+  }
+)
 @RestController
 @RequestMapping("/api")
 public class TutorialController {
