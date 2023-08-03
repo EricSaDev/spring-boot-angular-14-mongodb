@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Tutorial } from '../models/tutorial.model';
 
-const baseUrl = 'http://backend.demo-basa.apps.cluster-88z28.88z28.example.opentlc.com/api/tutorials';
+const baseUrl = 'http://backend-demo-basa.apps.cluster-88z28.88z28.example.opentlc.com/api/tutorials';
 
 @Injectable({providedIn: 'root'})
 export class TutorialService {
